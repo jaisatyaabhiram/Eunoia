@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EUNOIA — Regret Archive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+ 
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header / Splash -->
+  <div id="splash" class="flex flex-col items-center justify-center min-h-screen px-6 text-center">
+    <div class="glass rounded-3xl p-8 max-w-md w-full fade-up">
+      <!-- replace this file in assets/ with your logo (same name) -->
+      <img src="https://cdn-icons-png.flaticon.com/128/2152/2152477.png" alt="EUNOIA" class="mx-auto w-36 h-auto mb-4"/>
+      <h1 class="text-4xl font-bold">EUNOIA</h1>
+      <p class="muted mt-2">Where Emotions Meet Intelligence — Anonymous, Safe, Supportive</p>
+      <div class="mt-6 flex gap-3 justify-center">
+        <button onclick="enterApp()" class="px-8 py-3 rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 text-black font-semibold shadow-lg hover:scale-105 transform transition">Enter</button>
+        <button onclick="openAboutModal()" class="px-6 py-3 rounded-full border border-white/10 text-white muted hover:bg-white/5">About</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" class="hidden flex flex-col h-full">
+
+    <!-- Top nav -->
+    <header class="glass p-3 flex items-center justify-between px-6">
+      <div class="flex items-center gap-4">
+        <img src="https://cdn-icons-png.flaticon.com/128/2152/2152477.png" alt="logo" class="w-10 h-10"/>
+        <div>
+          <div class="text-lg font-semibold">EUNOIA</div>
+          <div class="text-sm muted">Anonymous Regrets • Community • Support</div>
+        </div>
+      </div>
+      <nav class="flex gap-2">
+        <button id="nav-post" class="nav-btn px-4 py-2 rounded-lg bg-white/5" onclick="openTab('post')">Post Regrets</button>
+        <button id="nav-explore" class="nav-btn px-4 py-2 rounded-lg hover:bg-white/5" onclick="openTab('explore')">Explore Regrets</button>
+        <button id="nav-chat" class="nav-btn px-4 py-2 rounded-lg hover:bg-white/5" onclick="openTab('euno')">Chat Euno</button>
+        <button id="nav-map" class="nav-btn px-4 py-2 rounded-lg hover:bg-white/5" onclick="openTab('maps')">Nearby Help</button>
+        <button id="nav-about" class="nav-btn px-4 py-2 rounded-lg hover:bg-white/5" onclick="openAboutModal()">About</button>
+      </nav>
+    </header>
+
+    <main class="flex-1 overflow-auto p-6">
+
+      <!-- Post Regrets (replaces journaling) -->
+      <section id="post" class="tab max-w-4xl mx-auto glass rounded-2xl p-6 space-y-4">
+        <h2 class="text-2xl font-semibold">Post an Anonymous Regret</h2>
+        <p class="muted">Share safely — no names, no accounts. Posts stored locally on your device.</p>
+
+        <textarea id="regretInput" rows="5" class="w-full p-4 rounded-xl text-gray-900" placeholder="Write your regret here... It will be anonymous."></textarea>
+        <div class="flex gap-3">
+          <button onclick="postRegret()" class="px-6 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 font-semibold text-black">Post Anonymously</button>
+          <button onclick="clearDraft()" class="px-4 py-2 rounded-lg border border-white/10 muted">Clear</button>
+          <button onclick="preloadExamples()" class="px-4 py-2 rounded-lg border border-white/10 muted">Load Examples</button>
+        </div>
+
+        <div id="myDrafts" class="space-y-3 mt-4"></div>
+      </section>
+
+      <!-- Explore Regrets -->
+      <section id="explore" class="tab hidden max-w-5xl mx-auto mt-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-semibold">Explore Anonymous Regrets</h2>
+            <p class="muted">Browse recent anonymous posts from this device. Like and comment — still anonymous.</p>
+          </div>
+          <div class="text-sm muted">Local only • No accounts</div>
+        </div>
+
+        <div id="exploreList" class="space-y-4"></div>
+      </section>
+
+      <!-- Euno Chat -->
+      <section id="euno" class="tab hidden max-w-3xl mx-auto glass rounded-2xl p-4">
+        <div class="flex items-center gap-3 mb-3">
+          <img src="https://cdn-icons-png.flaticon.com/128/4962/4962769.png" class="w-12 h-12 rounded-full" alt="Euno"/>
+          <div>
+            <div class="font-semibold text-lg">Chat with Euno</div>
+            <div class="muted text-sm">A friendly, supportive companion (not a clinician).</div>
+          </div>
+          <div class="ml-auto muted text-sm">Tip: Euno clears chat when you leave the tab for privacy.</div>
+        </div>
+
+        <div id="chatWindow" class="h-72 overflow-auto p-3 rounded-xl bg-[#061022] mb-3"></div>
+        <div class="flex gap-2">
+          <input id="chatInput" class="flex-1 rounded-xl p-3 text-gray-900" placeholder="Say something to Euno..." onkeydown="if(event.key==='Enter') sendMessage()"/>
+          <button onclick="sendMessage()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-400 text-black font-semibold">Send</button>
+        </div>
+        <p class="muted text-xs mt-2">If you’re in crisis, contact local emergency services immediately.</p>
+      </section>
+
+      <!-- Maps Tab (Google Maps API) -->
+      <section id="maps" class="tab hidden max-w-5xl mx-auto mt-6 glass rounded-2xl p-4 space-y-3">
+        <div class="flex gap-3">
+          <input id="mapSearch" class="flex-1 rounded-xl p-3 text-gray-900" placeholder="Search a place or city (e.g., Vijayawada)" />
+          <button onclick="searchMap()" class="px-4 py-2 rounded-lg bg-white/5">Search</button>
+          <button onclick="useMyLocation()" class="px-4 py-2 rounded-lg bg-white/5">Use my location</button>
+        </div>
+        <div id="map" class="w-full h-80 rounded-xl overflow-hidden"></div>
+        <div id="placesList" class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3"></div>
+      </section>
+
+    </main>
+
+    <footer class="p-4 text-center muted">Made for a world-class hackathon • All anonymous • Local-only by default</footer>
+  </div>
+
+  <!-- About Modal -->
+  <div id="aboutModal" class="fixed inset-0 hidden items-center justify-center bg-black/60">
+    <div class="bg-[#07102a] p-6 rounded-2xl max-w-md glass">
+      <h3 class="text-xl font-semibold">About EUNOIA</h3>
+      <p class="muted mt-2">EUNOIA pairs emotional support with simple tools: anonymous regrets, a friendly AI companion, and local help discovery. Everything stored locally unless you add a server.</p>
+      <div class="mt-4 flex justify-end">
+        <button onclick="closeAboutModal()" class="px-4 py-2 rounded-lg bg-white/5">Close</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&libraries=places&callback=initMap"></script>
+</body>
+</html>

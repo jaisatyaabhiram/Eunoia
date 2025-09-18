@@ -1,0 +1,8 @@
+:root{--bg:#0f1724;--card:#0b1220;--muted:#94a3b8}
+    html,body{height:100%}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial; background:linear-gradient(180deg,#071026 0%, #071a2a 100%); color:#e6eef8}
+    .glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.03)}
+    .fade-up{animation:fadeUp .45s ease both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    /* small helper */
+    .muted{color:var(--muted)}
